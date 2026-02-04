@@ -40,7 +40,7 @@ async function initializeSlides() {
         
         slide.innerHTML = `
             <img src="${imagePath}" alt="Slide Image ${slideNum}" class="fullscreen-image">
-            ${index === imageFiles.length - 1 ? '<footer class="end-footer"><p>🎉 You reached the last page! 🎉</p></footer>' : ''}
+            ${index === imageFiles.length - 1 ? '<footer class="end-footer"><p>End of presentation</p></footer>' : ''}
         `;
         
         container.appendChild(slide);
@@ -60,7 +60,10 @@ function checkImageExists(imagePath) {
     return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
+        img.onerror = () => {
+            // Silently fail - don't log 404 errors
+            resolve(false);
+        };
         img.src = imagePath;
     });
 }

@@ -220,7 +220,32 @@ function addEventListeners() {
     document.body.style.overflow = 'hidden';
 }
 
+// Request fullscreen on user interaction (first click or key press)
+function enableFullscreenOnInteraction() {
+    const triggerFullscreen = () => {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen().catch(err => {
+                console.log(`Fullscreen request denied: ${err.message}`);
+            });
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+        // Remove listeners after first interaction
+        document.removeEventListener('click', triggerFullscreen);
+        document.removeEventListener('keydown', triggerFullscreen);
+    };
+    
+    document.addEventListener('click', triggerFullscreen, { once: true });
+    document.addEventListener('keydown', triggerFullscreen, { once: true });
+}
+
 // Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', () => {
     initializeSlides();
+    enableFullscreenOnInteraction();
 });
